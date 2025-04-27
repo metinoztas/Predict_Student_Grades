@@ -34,7 +34,7 @@ st.markdown("""
         </a>
        
     </div>
-    <a href="https://github.com/metinz42" target="_blank" style="position: fixed; bottom: 20px; right: 240px;">
+    <a href="https://github.com/metinz42/Predict_Student_Grades" target="_blank" style="position: fixed; bottom: 20px; right: 240px;">
             <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" width="40" height="40" alt="Facebook"/>
     </a>
     
@@ -58,7 +58,7 @@ st.markdown(info_text, unsafe_allow_html=True)
 with st.form("girdi_formu"):
     st.header("🧾 Bilgi Girişi")
 
-    calisma_suresi = st.slider("Günlük Ders Çalışma Süresi (saat)", 0.0, 10.0, 2.0, 0.1)
+    calisma_suresi = st.slider("Okuldaki Dersler Dahil Günlük Ders Çalışma Süresi (saat)", 0.0, 10.0, 2.0, 0.1)
     hobi_saat = st.slider("Günlük Hobiler'e ayrılan süre (saat)", 0.0, 10.0, 2.0, 0.1)
     uyku_suresi = st.slider("Günlük Uyku Süresi (saat)", 0.0, 12.0, 7.0, 0.1)
     etkinlik_suresi = st.slider("Günlük Kulüp / Sosyal etkinliklere ayrılan süre (saat)", 0.0, 5.0, 1.0, 0.1)
