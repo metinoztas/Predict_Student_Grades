@@ -29,28 +29,18 @@ st.markdown("""
 
 st.markdown("""
     <div class="social-buttons">
-        <a href="https://www.linkedin.com/in/metin-%C3%B6zta%C5%9F-52275429a/" target="_blank" style="position: fixed; bottom: 20px; right: 180px; margin-right: 10px;">
-            <img src="https://media.licdn.com/dms/image/v2/C560BAQHaVYd13rRz3A/company-logo_100_100/company-logo_100_100/0/1638831590218/linkedin_logo?e=1750896000&v=beta&t=tv9LLBVyblA8I7bIiBdBKCVl2MKcFJMLqsdZ--oUNAs" width="40" height="40" alt="Facebook"/>
+        <a href="https://www.linkedin.com/in/metin-%C3%B6zta%C5%9F-52275429a/" target="_blank" style="position: fixed; bottom: 20px; right: 40px; margin-right: 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40" height="40" alt="Linkedin"/>
         </a>
        
     </div>
-    <a href="https://github.com/metinz42/Predict_Student_Grades" target="_blank" style="position: fixed; bottom: 20px; right: 240px;">
-            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" width="40" height="40" alt="Facebook"/>
+    <a href="https://github.com/metinz42/Predict_Student_Grades" target="_blank" style="position: fixed; bottom: 20px; right: 100px;">
+            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" width="40" height="40" alt="Github"/>
     </a>
     
 """, unsafe_allow_html=True)
 
 
-info_text = """
-<div style="position: fixed; bottom: 10px; right: 10px; color: white; background-color: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px;">
-    <p>Made by Metin Öztaş</p>
-</div>
-"""
-
-
-
-
-st.markdown(info_text, unsafe_allow_html=True)
 
 
 
