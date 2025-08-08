@@ -34,7 +34,7 @@ st.markdown("""
         </a>
        
     </div>
-    <a href="https://github.com/metinz42/Predict_Student_Grades" target="_blank" style="position: fixed; bottom: 20px; right: 100px;">
+    <a href="https://github.com/metinoztas/Predict_Student_Grades" target="_blank" style="position: fixed; bottom: 20px; right: 100px;">
             <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" width="40" height="40" alt="Github"/>
     </a>
     
@@ -107,6 +107,7 @@ if tahmin_buton:
 
     except Exception as e:
         st.error(f"Model yüklenirken hata oluştu: {e}")
+
 
 
 
