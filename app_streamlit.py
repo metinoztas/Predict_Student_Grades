@@ -29,7 +29,7 @@ st.markdown("""
 
 st.markdown("""
     <div class="social-buttons">
-        <a href="https://www.linkedin.com/in/metin-%C3%B6zta%C5%9F-52275429a/" target="_blank" style="position: fixed; bottom: 20px; right: 40px; margin-right: 10px;">
+        <a href="https://www.linkedin.com/in/metin-oztas/" target="_blank" style="position: fixed; bottom: 20px; right: 40px; margin-right: 10px;">
             <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40" height="40" alt="Linkedin"/>
         </a>
        
@@ -107,6 +107,7 @@ if tahmin_buton:
 
     except Exception as e:
         st.error(f"Model yüklenirken hata oluştu: {e}")
+
 
 
 
