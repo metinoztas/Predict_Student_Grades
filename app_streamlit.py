@@ -1,9 +1,9 @@
+# streamlit run app_streamlit.py
+
 import streamlit as st
 
-from tensorflow.keras.models import load_model
 import numpy as np
 import joblib
-from sklearn.metrics import mean_squared_error
 
 
 st.set_page_config(page_title="Öğrenci Performansı Tahmini", layout="centered")
@@ -21,8 +21,8 @@ st.markdown("""
 st.title("🎓 Öğrenci Performansı Tahmin Uygulaması")
 st.markdown("""
     Bu uygulama, öğrencilerin günlük alışkanlıklarını analiz ederek başarı tahmini yapmayı amaçlayan bir araçtır. 
-    TensorFlow tabanlı bir model, öğrencinin ders çalışma süresi, sosyal aktiviteler, uyku düzeni, 
-    fiziksel aktivite düzeyi ve stres seviyesi gibi faktörleri göz önünde bulundurarak gelecekteki akademik performansı hakkında tahminlerde bulunur.
+    Veri bilimi ve makine öğrenimi modeli (Linear Regression), öğrencinin ders çalışma süresi, sosyal aktiviteler, uyku düzeni, 
+    fiziksel aktivite düzeyi, stres seviyesi ve cinsiyet gibi faktörleri göz önünde bulundurarak gelecekteki akademik performansı hakkında tahminlerde bulunur.
 """)
 
 
@@ -66,8 +66,8 @@ with st.form("girdi_formu"):
 
 if tahmin_buton:
     try:
-        # Geliştirilmiş Modeli Yükle
-        model = load_model("improved_model.h5", custom_objects={'mse': mean_squared_error})
+        # Lineer Regresyon Modelini Yükle
+        model = joblib.load("linear_model.pkl")
 
         girdi = np.array([[calisma_suresi, etkinlik_suresi, uyku_suresi, hobi_saat, spor_suresi, stres_sayisal, cinsiyet_sayisal]])
 
@@ -77,13 +77,13 @@ if tahmin_buton:
         girdi_transform = scaler.transform(girdi)
 
 
-        tahmin = model.predict(girdi_transform)[0][0]
+        tahmin = model.predict(girdi_transform)[0]
         tahmin = round(tahmin, 2)
         
         
         st.success(f"📈 10 üzerinden Tahmin Edilen Başarı Notu: {tahmin}")
 
-        st.write("Bu model yaklaşık ±0.5 not (yaklaşık %6.4 hata payı) hassasiyetinde tahmin yapmaktadır! Kesin bir sonuç veremez.")
+        st.write("Bu model yaklaşık ±0.4 not (yaklaşık %5 hata payı) hassasiyetinde tahmin yapmaktadır! Kesin bir sonuç veremez.")
         
         if tahmin >= 7:
             st.balloons()

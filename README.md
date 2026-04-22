@@ -1,16 +1,17 @@
 # 🎓 Öğrenci Performansı Tahmin Uygulaması
 
-Bu proje, öğrencilerin günlük alışkanlıklarını analiz ederek akademik başarılarını tahmin etmeyi amaçlayan bir **makine öğrenmesi ve yapay zeka projesidir**. TensorFlow kullanılarak geliştirilen model, öğrencinin ders çalışma süresi, uyku düzeni, sosyal aktiviteler, hobiler, fiziksel aktivite ve stres seviyesini değerlendirerek not tahmini yapmaktadır.
+Bu proje, öğrencilerin günlük alışkanlıklarını analiz ederek akademik başarılarını tahmin etmeyi amaçlayan bir **veri bilimi ve makine öğrenmesi projesidir**. Linear Regression (Doğrusal Regresyon) algoritması kullanılarak geliştirilen bu model; öğrencinin ders çalışma süresi, uyku düzeni, sosyal aktiviteler, hobiler, fiziksel aktivite, cinsiyet ve stres seviyesini değerlendirerek not tahmini yapmaktadır.
 
 ---
 
 ## 📌 Özellikler
 
 - Günlük alışkanlıklara dayalı **öğrenci başarı tahmini**
-- **TensorFlow Keras** ile geliştirilmiş Derin Öğrenme Modeli (Dropout, BatchNormalization destekli)
+- **Scikit-learn** kütüphanesi ile **Linear Regression (Doğrusal Regresyon)** Modeli
 - **StandardScaler** ile veri normalizasyonu (öncesinde MinMaxScaler vardı)
 - Streamlit tabanlı **interaktif web uygulaması**
-- Model hata payı **%19.4'ten ~%6.4 (±0.5 Hata)** değerlerine düşürülmüştür
+- Model hata payı **~%5 (±0.41 Not Tahmin Hatası MAE)** değerlerine indirilerek daha kesin sonuçlar elde edilmiştir.
+- Linear Regression'a geçiş yapılıp işlemler oldukça hızlandırılmıştır.
 - Kullanıcıya kişiselleştirilmiş öneriler sunma
 
 ---
@@ -20,8 +21,7 @@ Bu proje, öğrencilerin günlük alışkanlıklarını analiz ederek akademik b
 - Python 3.x  
 - Pandas & NumPy  
 - Seaborn & Matplotlib  
-- Scikit-learn  
-- TensorFlow Keras  
+- Scikit-learn
 - Streamlit  
 - Joblib  
 
