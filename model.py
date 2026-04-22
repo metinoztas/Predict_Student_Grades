@@ -1,103 +1,101 @@
-#%%
 import pandas as pd
 import numpy as np
-import seaborn as sbn
-
-
-# %%
-dataFrame = pd.read_csv("data/student_lifestyle_dataset.csv",delimiter=",")
-
-# %%
-dataFrame.isnull().sum()
-# %%
-dataFrame.info()
-# %%
-dataFrame.describe()
-# %%
-sbn.displot(dataFrame["Grades"])
-# dataFrame["Stress_Level"].nunique() # Kaç tane farklı değer olduğunu gösterir
-# %%
-from sklearn.preprocessing import LabelEncoder
-le = LabelEncoder()
-dataFrame["Gender"] = le.fit_transform(dataFrame["Gender"])
-# Female : 1 , Male : 0
-dataFrame["Stress_Level"] = le.fit_transform(dataFrame["Stress_Level"])
-# Moderate : 2 , Low : 1 , High : 0
-
-# %%
-dataFrame.corr()["Grades"]
-# %%
-dataFrame = dataFrame.drop("Gender",axis=1)
-dataFrame = dataFrame.drop("Student_ID",axis=1)
-dataFrame.describe()
-# %%
-y = dataFrame["Grades"].values
-x = dataFrame.drop("Grades",axis=1).values
-# %%
-from sklearn.model_selection import train_test_split
-
-x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.33,random_state=42)
-# %%
-from sklearn.preprocessing import MinMaxScaler
-
-scaler = MinMaxScaler()
-
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
-x_train
-
-# %%
 import joblib
+import os
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, BatchNormalization
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-# scaler save
+print("Veri yükleniyor...")
+df = pd.read_csv("data/student_lifestyle_dataset.csv")
+
+# Gereksiz kolonları düşürme
+df = df.drop("Student_ID", axis=1)
+
+print("Veri ön işleme yapılıyor...")
+# Kategorik Verilerin Kodlanması
+# Stress Level: Ordinal (Sıralı) değişken (Low: 0, Moderate: 1, High: 2)
+stress_mapping = {"Low": 0, "Moderate": 1, "High": 2}
+df["Stress_Level"] = df["Stress_Level"].map(stress_mapping)
+
+# Gender: Binary kodlama (Male: 0, Female: 1)
+gender_mapping = {"Male": 0, "Female": 1}
+df["Gender"] = df["Gender"].map(gender_mapping)
+
+# X ve y ayrımı
+X = df.drop("Grades", axis=1)
+y = df["Grades"].values
+
+# Feature isimlerini kaydetme (ileride Streamlit'te hatasız kullanılabilmesi için)
+feature_names = X.columns.tolist()
+joblib.dump(feature_names, 'feature_names.pkl')
+print(f"Kullanılan Özellikler: {feature_names}")
+
+X = X.values
+
+# Eğitim ve test setlerine ayırma
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("Veri ölçeklendiriliyor (StandardScaler)...")
+# StandardScaler (Derin öğrenme modelleri genellikle standartlaştırmada daha iyi sonuç verir)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Scaler'ı kaydet
 joblib.dump(scaler, 'scaler.pkl')
 
-# %%
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-
+print("Derin Öğrenme Modeli oluşturuluyor...")
+# Geliştirilmiş Derin Öğrenme Modeli Mimarisi
 model = Sequential()
 
-model.add(Dense(12,activation="relu"))
-model.add(Dense(12,activation="relu"))
-model.add(Dense(12,activation = "relu"))
-model.add(Dense(12,activation = "relu"))
+model.add(Dense(64, activation="relu", input_shape=(X_train_scaled.shape[1],)))
+model.add(BatchNormalization())
+model.add(Dropout(0.2)) # Aşırı öğrenmeyi (Overfitting) engellemek için
 
-model.add(Dense(1))
+model.add(Dense(32, activation="relu"))
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
 
-model.compile(optimizer="adam",loss="mse")
-# %%
-from tensorflow.keras.callbacks import EarlyStopping
+model.add(Dense(16, activation="relu"))
 
-earlyStopping = EarlyStopping(monitor="val_loss",mode="min",verbose=1,patience=25,restore_best_weights=True)
+model.add(Dense(1, activation="linear")) # Regresyon problemi olduğu için çıkışta linear
 
-model.fit(x=x_train,y=y_train,epochs=700,validation_data = (x_test,y_test),verbose=1,callbacks=[earlyStopping])
-# %%
-modelKaybi = pd.DataFrame(model.history.history)
-modelKaybi.plot()
+model.compile(optimizer="adam", loss="mse", metrics=["mae"])
 
-# %%
-tahminDizisi = model.predict(x_test)
-tahminDizisi
-# %%
-import matplotlib.pyplot as plt
+# Callbacks
+early_stop = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=20, restore_best_weights=True)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=0.0001, verbose=1)
 
-plt.hist(tahminDizisi,bins=50)
-# %%
-from sklearn.metrics import mean_absolute_error
+print("Model eğitimi başlıyor...")
+history = model.fit(
+    x=X_train_scaled, 
+    y=y_train, 
+    epochs=150, 
+    batch_size=32,
+    validation_data=(X_test_scaled, y_test), 
+    verbose=1, 
+    callbacks=[early_stop, reduce_lr]
+)
 
-mean_absolute_error(y_test,tahminDizisi)
-# %%
-dataFrame.describe()
-# % 19 hata payı var ( grades mean / mean_absolute error  = hata payı)
-# %%
+print("\nModel Değerlendirmesi:")
+# Tahminler
+y_pred = model.predict(X_test_scaled)
 
-model.save("modelV2.h5")
+# Metrikler
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
 
-# from tensorflow.keras.models import load_model  
-# Kaydedilen modeli kullanmak için gerekli olan kütüphane
-# sonradanCagirilanModel = load_model("bisiklet_modeli.h5",custom_objects={'mse': mean_squared_error})
-# sonradanCagirilanModel.predict(yeniBisikletOzellikleri)
-# %%
+print(f"Mean Absolute Error (MAE): {mae:.4f}")
+print(f"Mean Squared Error (MSE): {mse:.4f}")
+print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
+print(f"R-squared (R2) Score: {r2:.4f}")
 
-# %%
+# Eğitilen Modeli Kaydetme
+model.save("improved_model.h5")
+print("\nModel 'improved_model.h5' olarak ve scaler 'scaler.pkl' olarak kaydedildi.")

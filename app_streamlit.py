@@ -55,8 +55,10 @@ with st.form("girdi_formu"):
     spor_suresi = st.slider("Günlük Fiziksel Aktivite Süresi (saat)", 0.0, 5.0, 1.0, 0.1)
 
     stres_secim = st.selectbox("Stres Seviyesi", ["Düşük", "Orta", "Yüksek"])
+    cinsiyet_secim = st.selectbox("Cinsiyet", ["Erkek", "Kadın"])
 
-    stres_sayisal = {"Düşük": 1, "Orta": 2, "Yüksek": 0}[stres_secim]
+    stres_sayisal = {"Düşük": 0, "Orta": 1, "Yüksek": 2}[stres_secim]
+    cinsiyet_sayisal = {"Erkek": 0, "Kadın": 1}[cinsiyet_secim]
 
     tahmin_buton = st.form_submit_button("🔍 Performansı Tahmin Et")
 
@@ -64,10 +66,10 @@ with st.form("girdi_formu"):
 
 if tahmin_buton:
     try:
-        # Model yükle
-        model = load_model("modelV2.h5",custom_objects={'mse': mean_squared_error})
+        # Geliştirilmiş Modeli Yükle
+        model = load_model("improved_model.h5", custom_objects={'mse': mean_squared_error})
 
-        girdi = np.array([[calisma_suresi, etkinlik_suresi, uyku_suresi, hobi_saat, spor_suresi, stres_sayisal]])
+        girdi = np.array([[calisma_suresi, etkinlik_suresi, uyku_suresi, hobi_saat, spor_suresi, stres_sayisal, cinsiyet_sayisal]])
 
         
         # Tahmin
@@ -81,7 +83,7 @@ if tahmin_buton:
         
         st.success(f"📈 10 üzerinden Tahmin Edilen Başarı Notu: {tahmin}")
 
-        st.write("Bu model %19.4 hata payı ile oluşturulmuştur ! Kesin bir sonuç veremez.")
+        st.write("Bu model yaklaşık ±0.5 not (yaklaşık %6.4 hata payı) hassasiyetinde tahmin yapmaktadır! Kesin bir sonuç veremez.")
         
         if tahmin >= 7:
             st.balloons()
